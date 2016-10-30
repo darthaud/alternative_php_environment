@@ -1,0 +1,32 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7.16
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: usr_myapplication
+      MYSQL_PASSWORD: pwd_myapplication
+    networks:
+      - my-network
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+  web:
+    build: docker
+    environment:
+      VIRTUAL_HOST: web.myapplication.dev
+    networks:
+      - my-network
+    volumes:
+      - ".:/var/www/html"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    environment:
+      VIRTUAL_HOST: phpmyadmin.myapplication.dev
+    networks:
+      - my-network
+networks:
+  my-network:
+    external:
+      name: my-network
